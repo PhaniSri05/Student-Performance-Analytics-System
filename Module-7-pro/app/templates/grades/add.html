@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Add Grade | Student Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Add Grade</h1>
+    <p>Record a student's academic performance.</p>
+</div>
+
+<div class="card" style="max-width:700px;">
+
+    <h2>Grade Information</h2>
+
+    <p style="color:#6b7280; margin:8px 0 25px;">
+        Select a student and course, then enter the score.
+    </p>
+
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label for="student_id">
+                Student
+            </label>
+
+            <select
+                id="student_id"
+                name="student_id"
+                class="form-control"
+                required
+            >
+
+                <option value="">
+                    Select Student
+                </option>
+
+                {% for student in students %}
+
+                <option value="{{ student.id }}">
+                    {{ student.name }} — {{ student.email }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="course_id">
+                Course
+            </label>
+
+            <select
+                id="course_id"
+                name="course_id"
+                class="form-control"
+                required
+            >
+
+                <option value="">
+                    Select Course
+                </option>
+
+                {% for course in courses %}
+
+                <option value="{{ course.id }}">
+                    {{ course.name }} — {{ course.code }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="score">
+                Score
+            </label>
+
+            <input
+                type="number"
+                id="score"
+                name="score"
+                class="form-control"
+                placeholder="Enter score (0-100)"
+                min="0"
+                max="100"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <div style="
+            display:flex;
+            gap:10px;
+            margin-top:25px;
+        ">
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Save Grade
+            </button>
+
+            <a
+                href="/grades"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

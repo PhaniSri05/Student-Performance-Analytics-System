@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Grade | Student Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Edit Grade</h1>
+    <p>Update a student's academic performance.</p>
+</div>
+
+<div class="card" style="max-width:700px;">
+
+    <h2>Grade Information</h2>
+
+    <p style="color:#6b7280; margin:8px 0 25px;">
+        Update the score for this grade record.
+    </p>
+
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label>
+                Student
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="{{ grade.student.name }}"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Course
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="{{ grade.course.name }} ({{ grade.course.code }})"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="score">
+                Score
+            </label>
+
+            <input
+                type="number"
+                id="score"
+                name="score"
+                class="form-control"
+                value="{{ grade.score }}"
+                min="0"
+                max="100"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <div style="
+            display:flex;
+            gap:10px;
+            margin-top:25px;
+        ">
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Update Grade
+            </button>
+
+            <a
+                href="/grades"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Grades | Student Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Grades</h1>
+    <p>Manage and monitor student academic performance.</p>
+</div>
+
+<div class="card">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+        flex-wrap:wrap;
+    ">
+
+        <div>
+            <h2>Grade Records</h2>
+            <p style="color:#6b7280;">
+                View and manage student grades
+            </p>
+        </div>
+
+        <div style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        ">
+
+            <a href="/grades/add" class="btn btn-primary">
+                + Add Grade
+            </a>
+
+            <a href="/grades/upload" class="btn btn-success">
+                ⬆ Upload CSV
+            </a>
+
+            <a href="/grades/export/csv" class="btn btn-secondary">
+                ↓ CSV
+            </a>
+
+            <a href="/grades/export/excel" class="btn btn-secondary">
+                ↓ Excel
+            </a>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <input
+        type="text"
+        id="search"
+        class="search-box"
+        placeholder="🔍 Search by student, course or score..."
+        onkeyup="searchGrades()"
+    >
+
+    <div class="table-container">
+
+        <table id="gradesTable">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                    <th>Performance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for grade in grades %}
+
+                <tr>
+
+                    <td>
+                        <strong>#{{ grade.id }}</strong>
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ grade.student.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ grade.course.name }}
+                        <br>
+                        <small style="color:#6b7280;">
+                            {{ grade.course.code }}
+                        </small>
+                    </td>
+
+                    <td>
+                        <strong>{{ grade.score }}</strong>
+                    </td>
+
+                    <td>
+                        {{ grade.date }}
+                    </td>
+
+                    <td>
+
+                        {% if grade.score >= 90 %}
+
+                            <span class="badge badge-green">
+                                Excellent
+                            </span>
+
+                        {% elif grade.score >= 75 %}
+
+                            <span class="badge badge-blue">
+                                Good
+                            </span>
+
+                        {% elif grade.score >= 50 %}
+
+                            <span class="badge badge-blue">
+                                Pass
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge"
+                                  style="
+                                  background:#fee2e2;
+                                  color:#b91c1c;
+                                  ">
+                                Needs Improvement
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="/grades/{{ grade.id }}/edit"
+                            class="btn btn-primary"
+                        >
+                            Edit
+                        </a>
+
+                        <form
+                            action="/grades/{{ grade.id }}/delete"
+                            method="POST"
+                            style="display:inline;"
+                            onsubmit="return confirm('Are you sure you want to delete this grade?');"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        style="
+                        text-align:center;
+                        padding:35px;
+                        color:#6b7280;
+                        "
+                    >
+                        No grade records found.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function searchGrades() {
+
+    let input =
+        document.getElementById("search")
+        .value
+        .toLowerCase();
+
+    let rows =
+        document
+        .getElementById("gradesTable")
+        .getElementsByTagName("tbody")[0]
+        .getElementsByTagName("tr");
+
+    for (let row of rows) {
+
+        if (row.cells.length < 6) {
+            continue;
+        }
+
+        let student =
+            row.cells[1]
+            .textContent
+            .toLowerCase();
+
+        let course =
+            row.cells[2]
+            .textContent
+            .toLowerCase();
+
+        let score =
+            row.cells[3]
+            .textContent
+            .toLowerCase();
+
+        if (
+            student.includes(input) ||
+            course.includes(input) ||
+            score.includes(input)
+        ) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

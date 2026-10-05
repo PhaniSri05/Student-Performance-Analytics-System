@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Students | Student Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Students</h1>
+    <p>Manage and view student information.</p>
+</div>
+
+<div class="card">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
+
+        <div>
+            <h2>Student Records</h2>
+            <p style="color: #6b7280;">
+                View, edit and manage students
+            </p>
+        </div>
+
+        <a href="/students/add" class="btn btn-primary">
+            + Add Student
+        </a>
+
+    </div>
+
+    <br>
+
+    <input
+        type="text"
+        id="search"
+        class="search-box"
+        placeholder="🔍 Search by name or email..."
+        onkeyup="searchStudents()"
+    >
+
+    <div class="table-container">
+
+        <table id="studentsTable">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for student in students %}
+
+                <tr>
+
+                    <td>
+                        <strong>#{{ student.id }}</strong>
+                    </td>
+
+                    <td>
+                        <strong>{{ student.name }}</strong>
+                    </td>
+
+                    <td>
+                        {{ student.email }}
+                    </td>
+
+                    <td>
+                        <span class="badge badge-green">
+                            Active
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="/students/{{ student.id }}"
+                            class="btn btn-secondary"
+                        >
+                            View
+                        </a>
+
+                        <a
+                            href="/students/{{ student.id }}/edit"
+                            class="btn btn-primary"
+                        >
+                            Edit
+                        </a>
+
+                        <form
+                            action="/students/{{ student.id }}/delete"
+                            method="POST"
+                            style="display:inline;"
+                            onsubmit="return confirm('Are you sure you want to delete this student?');"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="5" style="text-align:center; padding:30px;">
+                        No students found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function searchStudents() {
+
+    let input = document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+    let rows = document
+        .getElementById("studentsTable")
+        .getElementsByTagName("tbody")[0]
+        .getElementsByTagName("tr");
+
+    for (let row of rows) {
+
+        if (row.cells.length < 3) {
+            continue;
+        }
+
+        let name = row.cells[1].textContent.toLowerCase();
+        let email = row.cells[2].textContent.toLowerCase();
+
+        if (
+            name.includes(input) ||
+            email.includes(input)
+        ) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    }
+}
+
+</script>
+
+{% endblock %}

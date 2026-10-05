@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Course Details{% endblock %}
+
+{% block content %}
+
+<h1>Course Details</h1>
+
+<div class="card">
+
+    <p><strong>ID:</strong> {{ course.id }}</p>
+
+    <p><strong>Name:</strong> {{ course.name }}</p>
+
+    <p><strong>Code:</strong> {{ course.code }}</p>
+
+    <a href="/courses/{{ course.id }}/edit">
+        <button>Edit</button>
+    </a>
+
+    <a href="/courses">
+        <button>Back</button>
+    </a>
+
+</div>
+
+{% endblock %}

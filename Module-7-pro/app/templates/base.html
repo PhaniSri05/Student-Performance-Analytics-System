@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        Student Performance Analytics
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Student<span>Analytics</span>
+        </div>
+
+        <a class="nav-link" href="/">
+            🏠 Dashboard
+        </a>
+
+        <a class="nav-link" href="/students">
+            👨‍🎓 Students
+        </a>
+
+        <a class="nav-link" href="/courses">
+            📚 Courses
+        </a>
+
+        <a class="nav-link" href="/grades">
+            📝 Grades
+        </a>
+
+        <a class="nav-link" href="/analytics">
+            📊 Analytics
+        </a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        {% with messages = get_flashed_messages() %}
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</body>
+
+</html>

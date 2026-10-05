@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Course | Student Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Edit Course</h1>
+    <p>Update course information.</p>
+</div>
+
+<div class="card" style="max-width:700px;">
+
+    <h2>Course Information</h2>
+
+    <p style="color:#6b7280; margin:8px 0 25px;">
+        Update the course details below.
+    </p>
+
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label for="name">
+                Course Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                value="{{ course.name }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="code">
+                Course Code
+            </label>
+
+            <input
+                type="text"
+                id="code"
+                name="code"
+                class="form-control"
+                value="{{ course.code }}"
+                required
+            >
+
+        </div>
+
+
+        <div style="
+            display:flex;
+            gap:10px;
+            margin-top:25px;
+        ">
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Update Course
+            </button>
+
+            <a
+                href="/courses"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

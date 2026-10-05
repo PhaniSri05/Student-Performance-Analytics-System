@@ -1,0 +1,521 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics | Student Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Performance Analytics</h1>
+    <p>Analyze student performance using statistical insights.</p>
+</div>
+
+{% if empty %}
+
+<div class="card" style="text-align:center; padding:50px;">
+
+    <div style="font-size:50px;">
+        📊
+    </div>
+
+    <h2>No Analytics Data Available</h2>
+
+    <p style="color:#6b7280; margin-top:10px;">
+        Add some grades to view performance analytics.
+    </p>
+
+    <br>
+
+    <a href="/grades/add" class="btn btn-primary">
+        + Add Grade
+    </a>
+
+</div>
+
+{% else %}
+
+
+<!-- ========================= -->
+<!-- SUMMARY STATISTICS -->
+<!-- ========================= -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <h3>Average Score</h3>
+
+        <div class="number">
+            {{ average }}
+        </div>
+
+        <p>
+            Overall average performance
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>Median Score</h3>
+
+        <div class="number">
+            {{ median }}
+        </div>
+
+        <p>
+            Middle score value
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>Standard Deviation</h3>
+
+        <div class="number">
+            {{ std_dev }}
+        </div>
+
+        <p>
+            Score variation
+        </p>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>Students Ranked</h3>
+
+        <div class="number">
+            {{ rankings|length }}
+        </div>
+
+        <p>
+            Students with recorded grades
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- COURSE FILTER -->
+<!-- ========================= -->
+
+<div class="card">
+
+    <div class="page-header">
+
+        <h2>Course Filter</h2>
+
+        <p>
+            Select a course to analyze its performance.
+        </p>
+
+    </div>
+
+
+    <form method="GET" action="/analytics">
+
+        <div style="
+            display:flex;
+            gap:12px;
+            align-items:end;
+            flex-wrap:wrap;
+        ">
+
+            <div style="
+                flex:1;
+                min-width:250px;
+            ">
+
+                <label
+                    style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                    "
+                >
+                    Select Course
+                </label>
+
+
+                <select
+                    name="course"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        All Courses
+                    </option>
+
+
+                    {% for course in courses %}
+
+                    <option
+                        value="{{ course.name }}"
+                        {% if selected_course == course.name %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ course.name }} ({{ course.code }})
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Apply Filter
+            </button>
+
+
+            <a
+                href="/analytics"
+                class="btn btn-secondary"
+            >
+                Clear
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- COURSE AVERAGES -->
+<!-- ========================= -->
+
+<div class="card">
+
+    <div class="page-header">
+
+        <h2>Average Score by Course</h2>
+
+        <p>
+            Average performance for each course.
+        </p>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Course</th>
+
+                    <th>Average Score</th>
+
+                    <th>Performance</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for course_name, avg in course_averages.items() %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ course_name }}
+                        </strong>
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            {{ avg }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        {% if avg >= 90 %}
+
+                        <span class="badge badge-green">
+                            Excellent
+                        </span>
+
+                        {% elif avg >= 75 %}
+
+                        <span class="badge badge-blue">
+                            Good
+                        </span>
+
+                        {% elif avg >= 50 %}
+
+                        <span class="badge badge-blue">
+                            Average
+                        </span>
+
+                        {% else %}
+
+                        <span
+                            class="badge"
+                            style="
+                            background:#fee2e2;
+                            color:#b91c1c;
+                            "
+                        >
+                            Needs Improvement
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="3"
+                        style="
+                        text-align:center;
+                        padding:30px;
+                        color:#6b7280;
+                        "
+                    >
+                        No course data available.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- STUDENT RANKINGS -->
+<!-- ========================= -->
+
+<div class="card">
+
+    <div class="page-header">
+
+        <h2>Student Rankings</h2>
+
+        <p>
+            Students ranked according to their average scores.
+        </p>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Rank</th>
+
+                    <th>Student</th>
+
+                    <th>Average Score</th>
+
+                    <th>Performance</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for student_name, student_average in rankings.items() %}
+
+                <tr>
+
+                    <td>
+
+                        {% if loop.index == 1 %}
+
+                        🥇
+
+                        {% elif loop.index == 2 %}
+
+                        🥈
+
+                        {% elif loop.index == 3 %}
+
+                        🥉
+
+                        {% else %}
+
+                        <strong>
+                            #{{ loop.index }}
+                        </strong>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            {{ student_name }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            {{ student_average }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        {% if student_average >= 90 %}
+
+                        <span class="badge badge-green">
+                            Excellent
+                        </span>
+
+                        {% elif student_average >= 75 %}
+
+                        <span class="badge badge-blue">
+                            Good
+                        </span>
+
+                        {% elif student_average >= 50 %}
+
+                        <span class="badge badge-blue">
+                            Pass
+                        </span>
+
+                        {% else %}
+
+                        <span
+                            class="badge"
+                            style="
+                            background:#fee2e2;
+                            color:#b91c1c;
+                            "
+                        >
+                            Needs Improvement
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        style="
+                        text-align:center;
+                        padding:30px;
+                        color:#6b7280;
+                        "
+                    >
+                        No student ranking data available.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- REPORT DOWNLOADS -->
+<!-- ========================= -->
+
+<div class="card">
+
+    <div class="page-header">
+
+        <h2>Performance Reports</h2>
+
+        <p>
+            Download grade data for further analysis.
+        </p>
+
+    </div>
+
+
+    <div style="
+        display:flex;
+        gap:12px;
+        flex-wrap:wrap;
+    ">
+
+        <a
+            href="/grades/export/csv"
+            class="btn btn-success"
+        >
+            ↓ Download CSV Report
+        </a>
+
+
+        <a
+            href="/grades/export/excel"
+            class="btn btn-primary"
+        >
+            ↓ Download Excel Report
+        </a>
+
+    </div>
+
+</div>
+
+
+{% endif %}
+
+{% endblock %}
